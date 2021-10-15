@@ -20,5 +20,6 @@ export interface IGraphBatchRequestMap
 export interface IGraphBatchResponseMap
 {
   Url: string;
+  Status: number;
   Body: any;
 }

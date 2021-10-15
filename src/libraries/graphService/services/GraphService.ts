@@ -55,7 +55,8 @@ export class GraphService implements IGraphService {
     return objects;
   }
 
-  public async batch(endpoint: GraphEndpoint, requests: IGraphBatchRequest[]): Promise<IGraphBatchResponseMap[]> {
+  public async batch(endpoint: GraphEndpoint, requests: IGraphBatchRequest[]): Promise<IGraphBatchResponseMap[]> 
+  {
     this.graphEndpoint = endpoint;
 
     var id = 0;
@@ -81,6 +82,7 @@ export class GraphService implements IGraphService {
           responses.forEach(response => {
             var responseMap: IGraphBatchResponseMap = {
               Url: requestMaps.filter(req => req.Id === response["id"])[0].Url,
+              Status: response.status,
               Body: response["body"]
             };
             responseMaps.push(responseMap);
@@ -101,7 +103,7 @@ export class GraphService implements IGraphService {
   {
     var responses = (await this.post(`https://graph.microsoft.com/${this.graphEndpoint}/$batch`, batch))["responses"];
 
-    successfulResponses = responses.filter(r => r.status === 200);
+    successfulResponses = responses.filter(r => r.status !== 429);
     var throttledResponses = responses.filter(r => r.status === 429);
 
     if (throttledResponses.length > 0) {
@@ -122,5 +124,24 @@ export class GraphService implements IGraphService {
     }
 
     return successfulResponses;
+  }
+
+  /* Example method for using batch to get specfied teams with select properties */
+  public async getTeams(teamIds: string[], properties: string[]): Promise<any[]> {
+    var batchRequests: IGraphBatchRequest[] = [];
+  
+    for (var teamId of teamIds) {
+      batchRequests = batchRequests.concat([
+        {
+          Id: null,
+          Method: "GET",
+          Url: `/teams/${teamId}?$select=${properties.join(',')}`,
+          Body: null
+        }
+      ]);
+    }
+  
+    var responseMaps = await this.batch(GraphEndpoint['v1.0'], batchRequests);    
+    return responseMaps.map(responseMap => { return responseMap.Body; });
   }
 }
