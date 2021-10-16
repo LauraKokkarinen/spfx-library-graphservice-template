@@ -99,11 +99,11 @@ export class GraphService implements IGraphService {
     return responseMaps;
   }
 
-  private async makeBatchRequest(batch: IGraphBatch, successfulResponses: any[] = [])
+  private async makeBatchRequest(batch: IGraphBatch, nonThrottledResponses: any[] = [])
   {
     var responses = (await this.post(`https://graph.microsoft.com/${this.graphEndpoint}/$batch`, batch))["responses"];
 
-    successfulResponses = responses.filter(r => r.status !== 429);
+    nonThrottledResponses = responses.filter(r => r.status !== 429);
     var throttledResponses = responses.filter(r => r.status === 429);
 
     if (throttledResponses.length > 0) {
@@ -120,10 +120,10 @@ export class GraphService implements IGraphService {
       var throttledRequests = batch.Requests.filter(req => throttledIds.indexOf(req.Id) !== -1);
       batch.Requests = throttledRequests;
 
-      return successfulResponses.concat(await this.makeBatchRequest(batch));
+      return nonThrottledResponses.concat(await this.makeBatchRequest(batch));
     }
 
-    return successfulResponses;
+    return nonThrottledResponses;
   }
 
   /* Example method for using batch to get specfied teams with select properties */
