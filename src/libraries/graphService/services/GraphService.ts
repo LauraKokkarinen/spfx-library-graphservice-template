@@ -110,9 +110,13 @@ export class GraphService implements IGraphService {
       var waitTime = 0;
 
       for (var response of throttledResponses) {
-        // Unfortunately, not all Graph operations return a Retry-After header when throttling. In such a case, let's add 1 second of wait time per throttled request.
-        waitTime += response.headers["Retry-After"] !== undefined ? response.headers["Retry-After"] : 1;
+        // Graph docs: "You may retry all the failed requests in a new batch after the longest retry-after value."
+        var retryAfter = response.headers["Retry-After"];
+        waitTime = waitTime < retryAfter ? retryAfter : waitTime;
       }
+
+      // Unfortunately, not all Graph operations return a Retry-After header when throttling. In such a case, let's add 0.7 seconds of wait time per throttled request.
+      if (waitTime === 0) waitTime = throttledResponses * 0.7;
 
       await new Promise(t => setTimeout(t, waitTime * 1000));
 
