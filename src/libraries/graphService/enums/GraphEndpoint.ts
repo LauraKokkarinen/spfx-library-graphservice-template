@@ -1,4 +1,4 @@
 export enum GraphEndpoint {
-  "beta",
-  "v1.0"
+  beta = "beta",
+  v1 = "v1.0"
 }

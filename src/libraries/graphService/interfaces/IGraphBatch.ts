@@ -1,25 +1,34 @@
 export interface IGraphBatch
 {
-  Requests: IGraphBatchRequest[];
+  requests: IGraphBatchRequest[];
+  responses?: IGraphBatchResponse[];
 }
 
 export interface IGraphBatchRequest
 {
-  Url: string;
-  Method: string;
-  Body: string;
-  Id: string;
+  url: string;
+  method: string;
+  body: string;
+  id: string;
 }
 
 export interface IGraphBatchRequestMap
 {
-  Id: string;
-  Url: string;
+  id: string;
+  url: string;
 }
 
 export interface IGraphBatchResponseMap
 {
-  Url: string;
-  Status: number;
-  Body: any;
+  url: string;
+  status: number;
+  body: string;
+}
+
+export interface IGraphBatchResponse 
+{
+  id: string;
+  headers: Map<string, string | number>;
+  status: number;
+  body: string;
 }

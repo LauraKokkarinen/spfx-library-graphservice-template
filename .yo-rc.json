@@ -1,11 +1,20 @@
 {
   "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
     "isCreatingSolution": true,
-    "environment": "spo",
-    "version": "1.12.1",
+    "nodeVersion": "16.20.0",
+    "sdksVersions": {
+      "@microsoft/microsoft-graph-client": "3.0.2",
+      "@microsoft/teams-js": "2.9.1"
+    },
+    "version": "1.17.2",
     "libraryName": "graph-service",
     "libraryId": "3a5ca045-5aee-495f-ba62-023f20a57401",
+    "environment": "spo",
     "packageManager": "npm",
+    "solutionName": "spfx-library-graphservice-template",
+    "solutionShortDescription": "spfx-library-graphservice-template description",
+    "skipFeatureDeployment": true,
     "isDomainIsolated": false,
     "componentType": "library"
   }
